@@ -77,32 +77,46 @@
                 </div>
 
                 <!-- Model Comparison Grid -->
-                <div class="model-comparison">
-                    <div class="model-column" data-model="gpt-4o">
-                        <div class="model-header">
-                            <span class="model-badge gpt4o">GPT-4o</span>
+                <div class="model-comparison-container">
+                    <!-- Access Restricted Overlay -->
+                    <div id="restricted-overlay" class="restricted-overlay hidden">
+                        <div class="restricted-content">
+                            <svg viewBox="0 0 24 24" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                                <path fill="currentColor"
+                                    d="M12 17a2 2 0 0 0 2-2a2 2 0 0 0-2-2a2 2 0 0 0-2 2a2 2 0 0 0 2 2m6-9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h1V6a5 5 0 0 1 5-5a5 5 0 0 1 5 5v2zm-6-5a3 3 0 0 0-3 3v2h6V6a3 3 0 0 0-3-3m5 7H7v10h10z" />
+                            </svg>
+                            <h3>Reviewer Access Only</h3>
+                            <p>Full MCQ content and model evaluations are restricted to authorized reviewers.</p>
+                            <p class="restricted-hint">Please use the access link provided in the manuscript.</p>
                         </div>
-                        <div class="model-content"></div>
                     </div>
-                    <div class="model-column" data-model="anthropic/claude-3.5-sonnet">
-                        <div class="model-header">
-                            <span class="model-badge claude">Claude 3.5</span>
+
+                    <div class="model-comparison">
+                        <div class="model-column" data-model="gpt-4o">
+                            <div class="model-header">
+                                <span class="model-badge gpt4o">GPT-4o</span>
+                            </div>
+                            <div class="model-content"></div>
                         </div>
-                        <div class="model-content"></div>
-                    </div>
-                    <div class="model-column" data-model="gemini-1.5-flash-latest">
-                        <div class="model-header">
-                            <span class="model-badge gemini">Gemini 1.5</span>
+                        <div class="model-column" data-model="anthropic/claude-3.5-sonnet">
+                            <div class="model-header">
+                                <span class="model-badge claude">Claude 3.5</span>
+                            </div>
+                            <div class="model-content"></div>
                         </div>
-                        <div class="model-content"></div>
-                    </div>
-                    <div class="model-column" data-model="llama3-70b-8192">
-                        <div class="model-header">
-                            <span class="model-badge llama">Llama 3-70b</span>
+                        <div class="model-column" data-model="gemini-1.5-flash-latest">
+                            <div class="model-header">
+                                <span class="model-badge gemini">Gemini 1.5</span>
+                            </div>
+                            <div class="model-content"></div>
                         </div>
-                        <div class="model-content"></div>
+                        <div class="model-column" data-model="llama3-70b-8192">
+                            <div class="model-header">
+                                <span class="model-badge llama">Llama 3-70b</span>
+                            </div>
+                            <div class="model-content"></div>
+                        </div>
                     </div>
-                </div>
             </section>
         </main>
 

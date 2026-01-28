@@ -283,7 +283,78 @@ body {
     background: var(--llama);
 }
 
-/* ===== Case Detail View ===== */
+/* Restricted Overlay */
+.model-comparison-container {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.restricted-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+[data-theme="dark"] .restricted-overlay {
+    background: rgba(15, 23, 42, 0.92);
+}
+
+.restricted-content {
+    max-width: 400px;
+    padding: 30px;
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+.restricted-content svg {
+    color: var(--accent);
+    margin-bottom: 20px;
+}
+
+.restricted-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+
+.restricted-content p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.restricted-hint {
+    font-size: 0.85rem !important;
+    font-style: italic;
+    opacity: 0.8;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* ===== Footer ===== */
 .case-detail {
     padding: 20px 0 40px;
 }

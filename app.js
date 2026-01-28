@@ -29,6 +29,9 @@ const sessionCount = document.getElementById('session-count');
 const requestDatasetLink = document.getElementById('request-dataset-link');
 const tabBtns = document.querySelectorAll('.tab-btn');
 const modelColumns = document.querySelectorAll('.model-column');
+const restrictedOverlay = document.getElementById('restricted-overlay');
+const stats = document.querySelector('.stats');
+const filters = document.querySelector('.filters');
 
 // ===== Initialize =====
 document.addEventListener('DOMContentLoaded', () => {
@@ -76,8 +79,8 @@ function initEventListeners() {
         btn.addEventListener('click', () => {
             const question = btn.dataset.question;
 
-            // If locked and not in full access mode, show visual feedback
-            if (btn.classList.contains('locked') && (!currentCaseData || !currentCaseData.full_access)) {
+            // If locked (unauthorized), show visual feedback but don't switch
+            if (btn.classList.contains('locked')) {
                 btn.style.transform = 'scale(0.98)';
                 setTimeout(() => btn.style.transform = '', 150);
                 return;
@@ -115,6 +118,9 @@ function initFilters() {
 }
 
 function filterAndRender() {
+    // Dropdown Fix: Always navigate back to grid when filtering
+    showCaseGrid();
+
     const subspecialty = subspecialtyFilter.value;
     const searchTerm = searchInput.value.toLowerCase();
 
@@ -198,41 +204,33 @@ async function showCaseDetail() {
         caseTitle.textContent = `Case ${currentCaseId} - ${currentCaseData.subspecialty}`;
         caseCitation.innerHTML = formatCitation(currentCaseData.citation);
 
-        // Update tabs to show which MCQ is visible
-        const isFullAccess = currentCaseData.full_access;
-        const visibleMcq = isFullAccess ? 1 : currentCaseData.visible_mcq;
+        // Hybrid Access Check
+        const isRestricted = currentCaseData.access_restricted;
 
-        selectedMcq = visibleMcq;
-        currentView = 'mcq'; // Reset to MCQ view
+        if (isRestricted) {
+            restrictedOverlay.classList.remove('hidden');
+            tabBtns.forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('locked');
+                const label = btn.dataset.question === 'eval' ? 'Evaluation' : `MCQ ${btn.dataset.question}`;
+                btn.innerHTML = `${label} 🔒`;
+            });
+        } else {
+            restrictedOverlay.classList.add('hidden');
+            selectedMcq = 1;
+            currentView = 'mcq';
 
-        tabBtns.forEach(btn => {
-            const question = btn.dataset.question;
-            const isVisibleMcq = question === String(visibleMcq);
-            const isEval = question === 'eval';
+            tabBtns.forEach(btn => {
+                const question = btn.dataset.question;
+                const isFirstMcq = question === "1";
+                const isEval = question === 'eval';
 
-            // Reset classes
-            btn.classList.remove('active', 'locked');
-
-            if (isFullAccess) {
-                // All tabs active in full access mode
-                if (isVisibleMcq) btn.classList.add('active');
+                btn.classList.remove('active', 'locked');
+                if (isFirstMcq) btn.classList.add('active');
                 if (!isEval) btn.innerHTML = `MCQ ${question}`;
-            } else {
-                // Partial mode logic
-                if (isVisibleMcq) {
-                    btn.classList.add('active');
-                    btn.innerHTML = `MCQ ${question}`;
-                } else if (isEval) {
-                    btn.innerHTML = 'Evaluation';
-                } else {
-                    btn.classList.add('locked');
-                    btn.innerHTML = `MCQ ${question} 🔒`;
-                }
-            }
-        });
-
-        // Set Evaluation tab active if it was selected or default for partial
-        if (!isFullAccess) document.querySelector('[data-question="eval"]').classList.add('active');
+                else btn.innerHTML = 'Evaluation';
+            });
+        }
 
         renderModelComparison();
     } catch (error) {
@@ -251,7 +249,13 @@ function showCaseGrid() {
 }
 
 function renderModelComparison() {
-    if (!currentCaseData) return;
+    if (!currentCaseData || currentCaseData.access_restricted) {
+        // Clear content if restricted
+        modelColumns.forEach(column => {
+            column.querySelector('.model-content').innerHTML = '';
+        });
+        return;
+    }
 
     const mcqKey = `mcq_${selectedMcq}`;
 
@@ -266,22 +270,10 @@ function renderModelComparison() {
         }
 
         if (currentView === 'eval') {
-            // Show evaluation
-            const evaluation = isFullAccessMode()
-                ? (modelData.osce_session ? modelData.osce_session.evaluation : '')
-                : modelData.evaluation;
-
-            if (evaluation) {
-                contentDiv.innerHTML = formatContent(evaluation);
-            } else {
-                contentDiv.innerHTML = '<em>No evaluation available</em>';
-            }
+            const evaluation = modelData.osce_session ? modelData.osce_session.evaluation : '';
+            contentDiv.innerHTML = evaluation ? formatContent(evaluation) : '<em>No evaluation available</em>';
         } else {
-            // Show MCQ content
-            const mcq = isFullAccessMode()
-                ? (modelData.osce_session ? modelData.osce_session[mcqKey] : null)
-                : modelData[mcqKey];
-
+            const mcq = modelData.osce_session ? modelData.osce_session[mcqKey] : null;
             if (mcq) {
                 let content = formatContent(mcq.content);
                 content += `<div class="random-answer">Random Answer: ${mcq.random_answer}</div>`;
@@ -294,7 +286,7 @@ function renderModelComparison() {
 }
 
 function isFullAccessMode() {
-    return currentCaseData && currentCaseData.full_access;
+    return !currentCaseData || !currentCaseData.access_restricted;
 }
 
 function formatContent(text) {
