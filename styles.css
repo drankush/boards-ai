@@ -288,6 +288,8 @@ body {
     position: relative;
     border-radius: var(--radius-lg);
     overflow: hidden;
+    min-height: 400px;
+    /* Ensure overlay text doesn't get cut off when content is empty */
 }
 
 .restricted-overlay {
