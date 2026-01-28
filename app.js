@@ -26,6 +26,7 @@ const caseTitle = document.getElementById('case-title');
 const caseCitation = document.getElementById('case-citation');
 const caseCount = document.getElementById('case-count');
 const sessionCount = document.getElementById('session-count');
+const mcqCount = document.getElementById('mcq-count');
 const requestDatasetLink = document.getElementById('request-dataset-link');
 const tabBtns = document.querySelectorAll('.tab-btn');
 const modelColumns = document.querySelectorAll('.model-column');
@@ -142,6 +143,7 @@ function renderCaseGrid() {
 
     caseCount.textContent = `${casesToRender.length} cases`;
     sessionCount.textContent = `${casesToRender.length * 4} sessions`;
+    mcqCount.textContent = `${casesToRender.length * 4 * 3} MCQs`;
 
     caseGrid.innerHTML = casesToRender.map(c => `
         <div class="case-card" data-case-id="${c.case_id}">
