@@ -195,6 +195,11 @@ def llm_request_question(model: str, instruction: str, max_retries: int = 3) -> 
     # Map user-friendly model name to OpenRouter model ID
     model_id = OPENROUTER_MODEL_MAP.get(model, model)
 
+    # Determine sampling parameters
+    temperature = 1.0
+    top_p = 0.95 if "gemini" in model.lower() or "gemini" in model_id.lower() else 1.0
+    max_tokens = 4096
+
     for attempt in range(max_retries):
         try:
             with client:
@@ -205,6 +210,9 @@ def llm_request_question(model: str, instruction: str, max_retries: int = 3) -> 
                         {"role": "system", "content": QUESTION_GENERATION_SYSTEM_PROMPT},
                         {"role": "user", "content": instruction},
                     ],
+                    temperature=temperature,
+                    top_p=top_p,
+                    max_tokens=max_tokens,
                     timeout_ms=30000,
                 )
             content = response.choices[0].message.content
@@ -231,6 +239,11 @@ def llm_request_evaluation(model: str, instruction: str, max_retries: int = 3) -
     # Map user-friendly model name to OpenRouter model ID
     model_id = OPENROUTER_MODEL_MAP.get(model, model)
 
+    # Determine sampling parameters
+    temperature = 1.0
+    top_p = 0.95 if "gemini" in model.lower() or "gemini" in model_id.lower() else 1.0
+    max_tokens = 4096
+
     for attempt in range(max_retries):
         try:
             with client:
@@ -240,6 +253,9 @@ def llm_request_evaluation(model: str, instruction: str, max_retries: int = 3) -
                         {"role": "system", "content": EVALUATION_SYSTEM_PROMPT},
                         {"role": "user", "content": instruction},
                     ],
+                    temperature=temperature,
+                    top_p=top_p,
+                    max_tokens=max_tokens,
                     timeout_ms=60000,
                 )
             if response.choices:
