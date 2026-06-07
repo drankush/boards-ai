@@ -478,9 +478,18 @@ else:
         # Citation
         if session.get("citation"):
             st.info(f"**Image Reference:** {session['citation']}")
-        
-        if session.get("article_citation"):
-            st.info(f"**Article Reference:**\n{session['article_citation']}")
+
+        # Article Reference — pull from session or fall back to case JSON
+        art_cite = session.get("article_citation")
+        if not art_cite:
+            _uid = session.get("uid")
+            if _uid is not None:
+                _case_raw = load_case_by_uid(_uid)
+                if _case_raw:
+                    art_cite = _case_raw.get("Article Citation", "")
+        if art_cite:
+            st.markdown("**Article Reference:**")
+            st.markdown(f"> {art_cite}")
 
     with cols[1]:
         with st.expander("Advanced Feedback", expanded=True):
