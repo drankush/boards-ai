@@ -22,7 +22,7 @@ from prompts import (
     build_evaluation_instruction,
 )
 
-st.set_page_config(page_title="OSCE Session Generator", page_icon="🎓", layout="wide")
+st.set_page_config(page_title="Admin Portal", page_icon="🎓", layout="wide")
 
 NUM_QUESTIONS = 3
 
@@ -151,7 +151,7 @@ def get_openrouter_client() -> OpenRouter | None:
     return OpenRouter(
         api_key=api_key,
         http_referer="https://github.com/drankush/BOARDS-AI",
-        x_open_router_title="BOARDS-AI OSCE Session Generator",
+        x_open_router_title="BOARDS-AI Admin Portal",
     )
 
 
@@ -406,7 +406,7 @@ with st.sidebar:
 
 # ── Main UI ─────────────────────────────────────────────────────────────────
 
-st.title("🩻 Radiology OSCE Session Generator")
+st.title("🩻 Admin Portal")
 st.caption("Interactive 3-question OSCE session generator with LLM-generated MCQs")
 
 

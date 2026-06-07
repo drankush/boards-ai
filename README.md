@@ -42,7 +42,7 @@ streamlit run Welcome.py
 boards-ai-simulator/
 ├── Welcome.py                    # Landing page with project overview
 ├── pages/
-│   ├── 1_OSCE_Session_Generator.py # Interactive OSCE session engine
+│   ├── 1_Admin_Portal.py         # Interactive OSCE session engine
 │   └── 2_Rater_Portal.py         # Expert benchmarking survey form
 ├── prompts.py                    # LLM prompt templates (generation + evaluation)
 ├── case_loader.py                # Local JSON case loader
@@ -73,7 +73,7 @@ Contains the **exact LLM prompts** used in the study:
 - **Question Generation**: System prompt instructing the LLM to create OSCE-style MCQs with progressive difficulty, using case data for zero-shot in-context learning
 - **Evaluation**: System prompt for structured feedback generation covering correct/incorrect option analysis and an overall performance score
 
-### OSCE Session Generator (`pages/1_OSCE_Session_Generator.py`)
+### Admin Portal (`pages/1_Admin_Portal.py`)
 
 Interactive 3-question session:
 1. Load a random case from `data/`

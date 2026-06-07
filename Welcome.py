@@ -41,31 +41,31 @@ with st.sidebar:
     st.caption("Built for the BOARDS-AI research project.")
 
 # ── Main Content ────────────────────────────────────────────────────────────
-st.title("🎓 BOARDS-AI: Radiology OSCE Session Generator & Rater Portal")
+st.title("🎓 BOARDS-AI: Admin Portal & Rater Portal")
 
 st.markdown("""
 ### Open-Source Mock Implementation
 
 This is a **sanitized, local-first mock implementation** demonstrating the two key applications of the BOARDS-AI platform described in the accompanying manuscript:
 
-1. **OSCE Session Generator** — Ingests radiology cases and runs all four models simultaneously to generate questions, automatically select responses, and evaluate answers.
+1. **Admin Portal** — Ingests radiology cases and runs all four models simultaneously to generate questions, automatically select responses, and evaluate answers.
 2. **Rater Portal** — Allows raters to perform human evaluation of the generated sessions.
 
 > [!NOTE]
-> In the production environment, the **OSCE Session Generator** and the **Rater Portal** were two separate, decoupled applications. The raters evaluating the generated sessions in the Rater Portal were completely **blinded** to which model generated the OSCE session displayed to them.
+> In the production environment, the **Admin Portal** and the **Rater Portal** were two separate, decoupled applications. The raters evaluating the generated sessions in the Rater Portal were completely **blinded** to which model generated the OSCE session displayed to them.
 
 ---
 
 ### 🚀 Getting Started
 
 1. **Run in Mock Mode (No API key needed)**:
-   - Navigate directly to **OSCE Session Generator** from the sidebar.
+   - Navigate directly to **Admin Portal** from the sidebar.
    - Choose **Mondor disease (Mock Case 30244)**.
    - Click the start session button to experience the multi-model generation pipeline with pre-recorded questions, answers, and evaluations.
 2. **Run in Live Mode (API key required)**:
    - Enter your **OpenRouter API key** in the sidebar.
    - Add your own case data by placing JSON case files in the `data/` directory (following the schema in `data/case_schema.json`).
-   - Run the OSCE Session Generator to execute live LLM generation and evaluation for all four models in parallel.
+   - Run the Admin Portal to execute live LLM generation and evaluation for all four models in parallel.
 3. Navigate to the **Rater Portal** to review and evaluate the generated sessions.
 
 ---
@@ -108,6 +108,6 @@ BOARDS-AI ingested radiology cases structured as JSON files. Below is the archit
 """)
 
 st.info(
-    "👈 Use the sidebar to navigate to the **OSCE Session Generator** or **Rater Portal**.",
+    "👈 Use the sidebar to navigate to the **Admin Portal** or **Rater Portal**.",
     icon="ℹ️",
 )
