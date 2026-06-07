@@ -27,7 +27,7 @@ pip install -r requirements.txt
 
 # 2. Configure your API key
 cp .env.example .env
-# Edit .env and add your OpenAI API key
+# Edit .env and add your OpenRouter API key
 
 # 3. Run the simulator
 streamlit run Welcome.py
@@ -96,7 +96,7 @@ Ratings are saved as JSON files in the `ratings/` directory.
 |---------|-----------|-----------|
 | Case data source | Cloudinary CDN | Local `data/` folder |
 | User authentication | MongoDB + CAPTCHA + email verification | None (local use) |
-| LLM provider | Multi-client pool (OpenAI, Groq) | Single OpenAI client |
+| LLM provider | Multi-client pool (OpenAI, Groq) | OpenRouter client |
 | Session storage | MongoDB (`radexam` collection) | `st.session_state` |
 | Rater responses | MongoDB (`user_responses` collection) | Local JSON files |
 | Rate limiting | 15 requests/day per user | None |
@@ -105,7 +105,8 @@ Ratings are saved as JSON files in the `ratings/` directory.
 
 - Python 3.10+
 - [Streamlit](https://streamlit.io/) ≥1.30
-- [OpenAI Python SDK](https://github.com/openai/openai-python) ≥1.0
+- [OpenRouter Python SDK](https://github.com/OpenRouterTeam/python-sdk) ≥0.9.0
+- [OpenAI Python SDK](https://github.com/openai/openai-python) ≥1.0 (retained for production client compatibility)
 - [streamlit-survey](https://github.com/okld/streamlit-survey) 0.1.0
 - [streamlit-feedback](https://github.com/trubrics/streamlit-feedback) ≥0.1.3
 - [streamlit-option-menu](https://github.com/victoryhb/streamlit-option-menu) ≥0.3.13
