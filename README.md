@@ -2,6 +2,9 @@
 
 **Sanitized, local-first mock implementation** of the BOARDS-AI Radiology OSCE Simulator platform.
 
+**Demo App:** [https://boards-ai.streamlit.app/](https://boards-ai.streamlit.app/)
+*(Click "Yes, get this app back up!" if app has gone to sleep due to inactivity.)*
+
 This repository demonstrates the complete pipeline for LLM-driven radiology board examination simulation as described in:
 
 > *[Manuscript title and citation to be added upon publication]*
@@ -46,7 +49,8 @@ boards-ai-simulator/
 ├── image_utils.py                # Image collage builder
 ├── data/
 │   ├── case_schema.json          # Case data schema documentation
-│   └── demo_case.json            # Synthetic demo case for testing
+│   ├── 30244.json                # Synthetic demo case for testing
+│   └── db.osce_qa.json           # Pre-recorded database of rated sessions
 ├── requirements.txt              # Python dependencies
 ├── .env.example                  # API key template
 └── .streamlit/
@@ -105,4 +109,4 @@ Ratings are saved as JSON files in the `ratings/` directory.
 
 ## License
 
-*[License to be specified by authors]*
+MIT License

@@ -16,7 +16,7 @@ def load_all_cases(data_dir: str = "data") -> list[dict]:
     if not os.path.isdir(data_dir):
         return cases
     for fname in sorted(os.listdir(data_dir)):
-        if fname.endswith(".json") and fname not in ("case_schema.json", "database3.osce_qa.json"):
+        if fname.endswith(".json") and fname not in ("case_schema.json", "db.osce_qa.json"):
             fpath = os.path.join(data_dir, fname)
             with open(fpath, "r", encoding="utf-8") as f:
                 try:

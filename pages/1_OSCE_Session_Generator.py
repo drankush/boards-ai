@@ -264,7 +264,7 @@ def load_mock_session(model_name: str, uid: int) -> dict | None:
         if not target_model:
             return None
 
-        mock_file = "data/database3.osce_qa.json"
+        mock_file = "data/db.osce_qa.json"
         if os.path.exists(mock_file):
             with open(mock_file, "r") as f:
                 data = json.load(f)

@@ -114,7 +114,7 @@ with st.sidebar:
 
     # Count total available sessions in the database
     total_sessions = 0
-    db_file = "data/database3.osce_qa.json"
+    db_file = "data/db.osce_qa.json"
     if os.path.exists(db_file):
         try:
             with open(db_file, "r") as f:
@@ -333,10 +333,10 @@ st.markdown(
 
 # ── Load session to rate ────────────────────────────────────────────────────
 # In production, sessions are fetched from MongoDB.
-# Here, we load a random session from the pre-recorded database3.osce_qa.json.
+# Here, we load a random session from the pre-recorded db.osce_qa.json.
 
 def load_random_database_session() -> dict | None:
-    db_file = "data/database3.osce_qa.json"
+    db_file = "data/db.osce_qa.json"
     if not os.path.exists(db_file):
         return None
 
@@ -406,7 +406,7 @@ def load_random_database_session() -> dict | None:
             st.session_state.all_rated = True
             return None
     except Exception as e:
-        st.error(f"Error reading database3.osce_qa.json: {e}")
+        st.error(f"Error reading db.osce_qa.json: {e}")
     return None
 
 if st.session_state.rater_session is None:
@@ -429,7 +429,7 @@ if st.session_state.rater_session is None:
             st.error(f"Failed to load case data for UID {uid}.")
     else:
         if not st.session_state.get("all_rated", False):
-            st.info("No pre-recorded database sessions found. Please make sure data/database3.osce_qa.json exists.")
+            st.info("No pre-recorded database sessions found. Please make sure data/db.osce_qa.json exists.")
 
 
 # ── Display session + Survey ────────────────────────────────────────────────
