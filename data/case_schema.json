@@ -1,0 +1,50 @@
+{
+  "_description": "BOARDS-AI Case Data Schema — Each JSON file in this directory represents one radiology case.",
+  "_instructions": "To add your own cases: create a new .json file following this exact structure. Replace placeholder values with your own case data. The 'Case Images' array should contain base64-encoded images with the data-URI prefix.",
+  "schema": {
+    "Heading": {
+      "type": "string",
+      "description": "The diagnosis or condition name. This is the 'True Answer' passed to the LLM as context for question generation. It is never shown to the examinee."
+    },
+    "Presentation": {
+      "type": "string",
+      "description": "Clinical vignette: patient age, gender, symptoms, and relevant history. This IS shown to the examinee via the question stem."
+    },
+    "Patient Data": {
+      "type": "string",
+      "description": "Structured demographic block (age + gender). Newline-separated."
+    },
+    "Study Findings": {
+      "type": "array",
+      "items": {
+        "modality": "string — imaging modality (e.g., 'ct', 'mri', 'ultrasound', 'radiograph')",
+        "findings": "string — radiology report-style description of what the images show. Passed to LLM but NOT shown to examinee."
+      }
+    },
+    "Case Related Articles": {
+      "type": "array",
+      "items": {
+        "title": "string — article title",
+        "url": "string — source URL",
+        "text": "string — full article text (used as reference for LLM question generation)",
+        "systems": "string — radiology subspecialty (e.g., 'Breast', 'Neuro', 'MSK')",
+        "references": "object — key-value pairs of citation strings from the article"
+      }
+    },
+    "Citation": {
+      "type": "string",
+      "description": "Attribution string for the case images and data."
+    },
+    "Case Images": {
+      "type": "array",
+      "items": {
+        "base64": "string — data-URI encoded image (e.g., 'data:image/jpg;base64,...')",
+        "caption": "string — brief description of the image (e.g., 'Axial non-contrast CT')"
+      }
+    },
+    "uid": {
+      "type": "integer",
+      "description": "Unique numeric identifier for the case."
+    }
+  }
+}
