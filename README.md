@@ -106,7 +106,6 @@ Ratings are saved as JSON files in the `ratings/` directory.
 - Python 3.10+
 - [Streamlit](https://streamlit.io/) ≥1.30
 - [OpenRouter Python SDK](https://github.com/OpenRouterTeam/python-sdk) ≥0.9.0
-- [OpenAI Python SDK](https://github.com/openai/openai-python) ≥1.0 (retained for production client compatibility)
 - [streamlit-survey](https://github.com/okld/streamlit-survey) 0.1.0
 - [streamlit-feedback](https://github.com/trubrics/streamlit-feedback) ≥0.1.3
 - [streamlit-option-menu](https://github.com/victoryhb/streamlit-option-menu) ≥0.3.13
