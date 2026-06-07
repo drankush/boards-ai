@@ -450,10 +450,15 @@ else:
 
         # Display chat history
         chat = session.get("chat_history", [])
+        question_idx = 1
         for msg in chat:
             if msg["role"] == "assistant":
                 with st.chat_message("assistant"):
-                    st.markdown(msg["content"])
+                    content = msg["content"]
+                    if "**Question:**" in content:
+                        content = content.replace("**Question:**", f"**Question {question_idx}:**", 1)
+                        question_idx += 1
+                    st.markdown(content)
             elif msg["role"] == "user":
                 with st.chat_message("user"):
                     st.write(msg["content"])
