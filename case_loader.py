@@ -109,6 +109,7 @@ def extract_case_fields(case_data: dict) -> dict:
     )
 
     citation = case_data.get("Citation", "No citation available")
+    article_citation = case_data.get("Article Citation", "")
     uid = case_data.get("uid", 0)
 
     return {
@@ -120,6 +121,7 @@ def extract_case_fields(case_data: dict) -> dict:
         "reference_article": reference_article,
         "system": system,
         "citation": citation,
+        "article_citation": article_citation,
         "case_images": case_images,
         "image_captions": image_captions,
         "uid": uid,

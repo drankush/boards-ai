@@ -19,6 +19,13 @@ from image_utils import process_images
 
 st.set_page_config(page_title="Rater Portal", page_icon="📋", layout="wide")
 
+st.markdown("""
+    <style>
+    p, div, span, li, label, .stMarkdown {
+        font-size: 20px !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
 RATINGS_DIR = "ratings"
 os.makedirs(RATINGS_DIR, exist_ok=True)
 
@@ -425,6 +432,7 @@ if st.session_state.rater_session is None:
                 "image": collage_b64,
                 "model": selected_sess.get("model"),
                 "citation": fields.get("citation"),
+                "article_citation": fields.get("article_citation"),
             }
         else:
             st.error(f"Failed to load case data for UID {uid}.")
@@ -470,6 +478,9 @@ else:
         # Citation
         if session.get("citation"):
             st.info(f"**Image Reference:** {session['citation']}")
+        
+        if session.get("article_citation"):
+            st.info(f"**Article Reference:**\n{session['article_citation']}")
 
     with cols[1]:
         with st.expander("Advanced Feedback", expanded=True):

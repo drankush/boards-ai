@@ -304,6 +304,7 @@ defaults = {
     "image_captions": None,
     "reference_article": None,
     "citation": None,
+    "article_citation": None,
     "uid": None,
     "system": None,
     "run_as_mock": False,
@@ -424,6 +425,7 @@ def start_case_session(case_raw: dict):
     st.session_state.image_captions = fields["image_captions"]
     st.session_state.reference_article = fields["reference_article"]
     st.session_state.citation = fields["citation"]
+    st.session_state.article_citation = fields.get("article_citation")
     st.session_state.uid = fields["uid"]
     st.session_state.system = fields["system"]
 
@@ -602,6 +604,9 @@ if st.session_state.show_question_area:
         st.divider()
         if st.session_state.citation:
             st.info(f"**Image Reference:** {st.session_state.citation}")
+            
+        if st.session_state.article_citation:
+            st.info(f"**Article Reference:**\n{st.session_state.article_citation}")
 
         # Download & Reset layout
         col_down, col_reset = st.columns([1, 1])
