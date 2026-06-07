@@ -424,6 +424,7 @@ if st.session_state.rater_session is None:
                 "system": selected_sess.get("system") or fields["system"],
                 "image": collage_b64,
                 "model": selected_sess.get("model"),
+                "citation": fields.get("citation"),
             }
         else:
             st.error(f"Failed to load case data for UID {uid}.")
@@ -460,6 +461,10 @@ else:
         # Final answer
         if session.get("condition"):
             st.success(f"Final answer: {session['condition']}")
+            
+        # Citation
+        if session.get("citation"):
+            st.info(f"**Image Reference:** {session['citation']}")
 
     with cols[1]:
         with st.expander("Advanced Feedback", expanded=True):
