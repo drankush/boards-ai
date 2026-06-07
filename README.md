@@ -21,7 +21,7 @@ This mock implementation replaces production cloud dependencies (Cloudinary CDN,
 
 ```bash
 # 1. Clone and install dependencies
-git clone <repository-url>
+git clone https://github.com/drankush/BOARDS-AI-Code-Sharing
 cd boards-ai-simulator
 pip install -r requirements.txt
 
@@ -74,7 +74,7 @@ Contains the **exact LLM prompts** used in the study:
 Interactive 3-question session:
 1. Load a random case from `data/`
 2. Display case images as a tiled collage
-3. LLM generates MCQ → user selects answer → repeat 3×
+3. LLM generates MCQ → random option selection → repeat 3×
 4. LLM evaluates all responses with structured feedback
 
 ### Rater Portal (`pages/2_Rater_Portal.py`)
@@ -86,20 +86,12 @@ Expert benchmarking form with 7 metrics per question:
 - **Option Accuracy** (5-point scale)
 - **Assessment Accuracy** (5-point scale)
 - **Feedback Quality** (5-point scale)
-- **Cognitive Level** (2-category)
+- **Cognitive Level** (2-category)*
+
+*Not part of the current study.
 
 Ratings are saved as JSON files in the `ratings/` directory.
 
-## Production vs. Mock
-
-| Feature | Production | This Mock |
-|---------|-----------|-----------|
-| Case data source | Cloudinary CDN | Local `data/` folder |
-| User authentication | MongoDB + CAPTCHA + email verification | None (local use) |
-| LLM provider | Multi-client pool (OpenAI, Groq) | OpenRouter client |
-| Session storage | MongoDB (`radexam` collection) | `st.session_state` |
-| Rater responses | MongoDB (`user_responses` collection) | Local JSON files |
-| Rate limiting | 15 requests/day per user | None |
 
 ## Dependencies
 
