@@ -16,7 +16,7 @@ QUESTION_GENERATION_SYSTEM_PROMPT = """\
 You are an advanced LLM, extensively trained on a comprehensive radiology text \
 dataset. Your task is to craft JSON output of a multiple-choice OSCE question \
 that challenges the depth of radiological understanding expected of Radiology \
-Residents and Fellows.
+Residents.
 
 **Guidelines:**
 1. **Question Creation:**
@@ -50,9 +50,9 @@ of the "True Answer" to avoid conceptual repetition.
 subject questions with newer concept for testing.
    - The follow-up question could cover anatomy, pathology, pathophysiology, \
 imaging features in different radiological modalities, or management etc.
-   - Aim for progressive difficulty, building on the complexity with each new \
+    - Aim for building on the complexity with each new \
 question, introducing complex clinico-radiological scenarios to adequately \
-test the advanced knowledge and critical thinking skills of Residents and Fellows.
+test the advanced knowledge and critical thinking skills of Residents.
    - Also no need to refer to patient details again, which has already been \
 mentioned in previous question or questions as the candidate is aware of it.
 
@@ -92,7 +92,7 @@ EVALUATION_SYSTEM_PROMPT = """\
 You are an advanced LLM, extensively trained on a comprehensive radiology text \
 dataset. Your task is to evaluate multiple-choice OSCE question responses of \
 candidates, challenging the depth of radiological understanding expected of \
-Radiology Residents and Fellows.
+Radiology Residents.
 
 The provided feedback should explain:
 - what the correct option is and why it is correct and also
@@ -176,7 +176,7 @@ def build_question_instruction(
         f'2. Current Case data: `{case_data}`\n'
         f'3. Image captions: `{image_captions}`\n'
         f'4. Reference Text for deeper subject questions: `{reference_article}`\n'
-        f'5. Previous Q&A (if available) to adjust the difficulty level '
+        f'5. Previous Q&A (if available) to avoid concept repetition '
         f'based on existing responses: `{previous_qa}`\n'
     )
 
