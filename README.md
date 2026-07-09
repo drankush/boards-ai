@@ -14,7 +14,7 @@ This repository demonstrates the complete pipeline for LLM-driven radiology boar
 BOARDS-AI uses large language models (LLMs) to generate interactive, case-based OSCE (Objective Structured Clinical Examination) sessions for radiology education. The platform:
 
 1. **Ingests** radiology case data (clinical vignettes, imaging findings, reference articles)
-2. **Generates** progressively difficult MCQ questions using zero-shot, in-context learning
+2. **Generates** unique MCQ questions using zero-shot, in-context learning
 3. **Evaluates** candidate responses with structured, educational feedback
 4. **Benchmarks** quality through an expert rater survey portal
 
