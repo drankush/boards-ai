@@ -1,187 +1,222 @@
 """
-Gwet's AC1 and AC2 calculation for inter-rater reliability.
-AC1 = unweighted (for nominal data)
-AC2 = weighted (for ordinal data)
+Gwet's AC1 and AC2 Calculation for Inter-Rater Reliability.
 
-Reference: Gwet, K.L. (2014). Handbook of Inter-Rater Reliability (4th Edition)
+- AC1: Unweighted chance-corrected agreement coefficient (for nominal categories)
+- AC2: Weighted chance-corrected agreement coefficient with quadratic weights (for ordinal categories)
+
+Reference:
+Gwet, K.L. (2014). Handbook of Inter-Rater Reliability (4th Edition). Advanced Analytics, LLC.
 """
-import pandas as pd
+
+import csv
+import json
 import numpy as np
+import pandas as pd
 from scipy import stats
 
-def calculate_gwet_ac1(pivoted_df, categories):
+def parse_pilot_data(csv_path: str) -> pd.DataFrame:
     """
-    Calculates Gwet's AC1 (unweighted) for ordinal data.
-    pivoted_df: rows = items, columns = raters, values = ratings
-    categories: list of possible rating values
+    Parses pilot_responses CSV where survey data is stored as JSON per row.
+    Expands q1, q2, q3 sub-questions to produce unique item-level ratings.
     """
-    n = len(pivoted_df)  # number of items
-    q = len(categories)  # number of categories
-    ratings = pivoted_df.values
-    r = ratings.shape[1]  # number of raters per item (assuming constant)
-    
-    # For each item i and category k, count how many raters assigned category k
-    # n_ik matrix: (n_items x q_categories)
-    n_ik = np.zeros((n, q))
-    for i in range(n):
-        for k_idx, k_val in enumerate(categories):
-            n_ik[i, k_idx] = np.sum(ratings[i, :] == k_val)
-    
-    # Marginal proportions: pi_k = (1/n) * sum_i (n_ik / r)
-    pi_k = np.mean(n_ik / r, axis=0)
-    
-    # Observed agreement (proportion of concordant pairs)
-    # Pa = (1/n) * sum_i [ (1 / (r*(r-1))) * sum_k n_ik * (n_ik - 1) ]
-    pa_items = []
-    for i in range(n):
-        sum_k = 0
-        for k in range(q):
-            sum_k += n_ik[i, k] * (n_ik[i, k] - 1)
-        pa_items.append(sum_k / (r * (r - 1)))
-    pa = np.mean(pa_items)
-    
-    # Chance agreement for AC1
-    # Pe = sum_k pi_k * (1 - pi_k) / (q - 1)
-    pe = np.sum(pi_k * (1 - pi_k)) / (q - 1)
-    
-    # Gwet's AC1
-    if pe >= 1:
-        ac1 = 1.0
-    else:
-        ac1 = (pa - pe) / (1 - pe)
-    
-    # Variance estimation (using delta method approximation)
-    # This is a simplified version
-    var_pa = np.var(pa_items) / n
-    se = np.sqrt(var_pa) / (1 - pe) if pe < 1 else 0
-    
-    return ac1, se
+    records = []
+    with open(csv_path, "r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            ques_id = row["ques_id"]
+            rater = row["email"]
+            system = row["system"]
+            model = row["model"]
+            data = json.loads(row["survey_data"])
+            
+            for q_num in ["q1", "q2", "q3"]:
+                item_id = f"{ques_id}_{q_num}"
+                rec = {
+                    "item_id": item_id,
+                    "ques_id": ques_id,
+                    "sub_q": q_num,
+                    "rater": rater,
+                    "system": system,
+                    "model": model,
+                }
+                for k, v in data.items():
+                    if k.startswith(f"{q_num}_"):
+                        metric_name = k[len(q_num) + 1 :]
+                        rec[metric_name] = v["value"]
+                records.append(rec)
+    return pd.DataFrame(records)
 
 
-def calculate_gwet_ac2_quadratic(pivoted_df, categories):
+def calculate_gwet(ratings_df: pd.DataFrame, weights: str = "unweighted", categories: list = None) -> dict:
     """
-    Calculates Gwet's AC2 with quadratic weights for ordinal data.
+    Calculates Gwet's AC1 (unweighted) or AC2 (weighted) with standard error and 95% CI.
+    
+    ratings_df: DataFrame with rows = subjects/items, columns = raters
+    weights: 'unweighted' for AC1, 'quadratic' for AC2, or custom 2D ndarray
+    categories: list of categories ordered logically
     """
-    n = len(pivoted_df)
+    ratings = ratings_df.values
+    n, r = ratings.shape
+    if categories is None:
+        categories = sorted(list(np.unique(ratings[~pd.isna(ratings)])))
     q = len(categories)
-    ratings = pivoted_df.values
-    r = ratings.shape[1]
     
-    # Create quadratic weight matrix
-    # w_kl = 1 - (k - l)^2 / (q - 1)^2
-    w = np.zeros((q, q))
-    for k in range(q):
-        for l in range(q):
-            w[k, l] = 1 - ((k - l)**2) / ((q - 1)**2)
-    
-    # Count matrix n_ik
-    n_ik = np.zeros((n, q))
-    for i in range(n):
-        for k_idx, k_val in enumerate(categories):
-            n_ik[i, k_idx] = np.sum(ratings[i, :] == k_val)
-    
-    # Marginal proportions
-    pi_k = np.mean(n_ik / r, axis=0)
-    
-    # Weighted observed agreement
-    # Pa_w = (1/n) * sum_i [ (1/(r*(r-1))) * sum_k sum_l w_kl * n_ik * (n_il - delta_kl) ]
-    pa_w_items = []
-    for i in range(n):
-        total = 0
-        for k in range(q):
-            for l in range(q):
-                delta_kl = 1 if k == l else 0
-                total += w[k, l] * n_ik[i, k] * (n_ik[i, l] - delta_kl)
-        pa_w_items.append(total / (r * (r - 1)))
-    pa_w = np.mean(pa_w_items)
-    
-    # Weighted chance agreement for AC2
-    # Pe_w = ( sum_k sum_l w_kl * pi_k * pi_l - (1/q) * sum_k w_kk ) / (1 - 1/q)
-    # Simplified: Pe_w = sum_{k!=l} w_kl * pi_k * pi_l / (1 - sum_k pi_k^2)
-    # Actually for AC2: Pe_w = T_w * sum_k pi_k * (1 - pi_k) / (q - 1)
-    # where T_w = mean of off-diagonal weights = sum_{k!=l} w_kl / (q * (q-1))
-    
-    # T_w calculation
-    off_diag_sum = np.sum(w) - np.trace(w)
-    t_w = off_diag_sum / (q * (q - 1))
-    
-    pe_w = t_w * np.sum(pi_k * (1 - pi_k)) / (q - 1)
-    
-    # AC2
-    if pe_w >= 1:
-        ac2 = 1.0
+    # Construct Weight Matrix w_kl
+    if isinstance(weights, str):
+        if weights == "unweighted":
+            w = np.eye(q)
+        elif weights == "quadratic":
+            w = np.zeros((q, q))
+            for k in range(q):
+                for l in range(q):
+                    w[k, l] = 1.0 - ((k - l) ** 2) / ((q - 1) ** 2) if q > 1 else 1.0
+        else:
+            raise ValueError(f"Unknown weight type: {weights}")
     else:
-        ac2 = (pa_w - pe_w) / (1 - pe_w)
+        w = np.array(weights)
+        
+    # Count matrix n_ik: (n items x q categories)
+    agree_mat = np.zeros((n, q))
+    for k_idx, k_val in enumerate(categories):
+        agree_mat[:, k_idx] = np.sum(ratings == k_val, axis=1)
+        
+    agree_mat_w = np.dot(agree_mat, w)
+    ri_vec = np.sum(agree_mat, axis=1)
     
-    # SE estimation
-    var_pa_w = np.var(pa_w_items) / n
-    se = np.sqrt(var_pa_w) / (1 - pe_w) if pe_w < 1 else 0
+    sum_q = np.sum(agree_mat * (agree_mat_w - 1), axis=1)
+    n2more = np.sum(ri_vec >= 2)
     
-    return ac2, se
+    # Observed agreement Pa
+    pa = np.sum(sum_q[ri_vec >= 2] / (ri_vec * (ri_vec - 1))[ri_vec >= 2]) / n2more
+    
+    # Marginal probabilities pi_k
+    pi_vec = np.mean(agree_mat / ri_vec[:, None], axis=0)
+    weights_mat_sum = np.sum(w)
+    
+    # Expected chance agreement Pe
+    if q >= 2:
+        pe = weights_mat_sum * np.sum(pi_vec * (1 - pi_vec)) / (q * (q - 1))
+    else:
+        pe = 1.0 - 1e-15
+        
+    # Gwet's Agreement Coefficient
+    ac = (pa - pe) / (1.0 - pe) if pe < 1.0 else 1.0
+    
+    # Standard error calculation via Gwet's linearization (delta method)
+    den_ivec = ri_vec * (ri_vec - 1)
+    den_ivec[den_ivec == 0] = 1
+    pa_ivec = sum_q / den_ivec
+    pe_r2 = pe * (ri_vec >= 2)
+    ac_ivec = (n / n2more) * (pa_ivec - pe_r2) / (1.0 - pe)
+    pe_ivec = (weights_mat_sum / (q * (q - 1))) * np.dot(agree_mat, (1 - pi_vec)) / ri_vec
+    ac_ivec_x = ac_ivec - 2 * (1 - ac) * (pe_ivec - pe) / (1.0 - pe)
+    
+    var_ac = (1.0 / (n * (n - 1))) * np.sum((ac_ivec_x - ac) ** 2)
+    se = np.sqrt(var_ac)
+    
+    t_crit = stats.t.ppf(0.975, df=n - 1)
+    ci_low = max(-1.0, ac - t_crit * se)
+    ci_high = min(1.0, ac + t_crit * se)
+    p_value = 2 * (1 - stats.t.cdf(abs(ac / se), df=n - 1)) if se > 0 else 0.0
+    
+    return {
+        "coeff": ac,
+        "se": se,
+        "pa": pa,
+        "pe": pe,
+        "ci_low": ci_low,
+        "ci_high": ci_high,
+        "p_value": p_value,
+    }
 
 
-def get_interpretation(val):
-    if val < 0.20: return "Poor"
-    if val < 0.40: return "Fair"
-    if val < 0.60: return "Moderate"
-    if val < 0.80: return "Good"
+def get_altman_interpretation(val: float) -> str:
+    """Altman (1991) benchmark scale for agreement coefficients."""
+    if val < 0.20:
+        return "Poor"
+    if val < 0.40:
+        return "Fair"
+    if val < 0.60:
+        return "Moderate"
+    if val < 0.80:
+        return "Good"
     return "Very Good"
 
 
-# Main execution
-input_csv = 'pilot_responses_simplified.csv'
-df = pd.read_csv(input_csv)
-
-metrics = ['clarity', 'clinical_relevance', 'difficulty', 'option_accuracy', 'assessment_accuracy', 'feedback_quality']
-categories = [1, 2, 3, 4, 5]
-
-print("=" * 80)
-print("Gwet's AC1 (unweighted, for nominal comparison)")
-print("=" * 80)
-results_ac1 = []
-for metric in metrics:
-    df['question_id'] = df['unique_id'].str.rsplit('_', n=1).str[0]
-    pivoted = df.pivot(index='question_id', columns='rater', values=metric)
-    pivoted = pivoted.dropna()
+def main():
+    csv_path = "pilot_responses - pilot_responses.csv"
+    df = parse_pilot_data(csv_path)
     
-    ac1, se = calculate_gwet_ac1(pivoted, categories)
-    ci_low = ac1 - 1.96 * se
-    ci_high = ac1 + 1.96 * se
+    # Define ordinal category ordering for ordinal scales
+    ordinal_categories = {
+        "clarity": ["Very Unclear", "Unclear", "Neutral", "Clear", "Very Clear"],
+        "clinical_relevance": ["Not Relevant", "Slightly Relevant", "Moderately Relevant", "Very Relevant", "Highly Relevant"],
+        "difficulty": ["1 - Easy", "3 - Moderate", "5 - Difficult"],
+        "option_accuracy": ["None", "Three", "Two", "One option only"],
+        "assessment_accuracy": ["All 4 incorrect", "1 incorrect", "All accurately identified"],
+        "feedback_quality": ["Not Helpful", "Slightly Helpful", "Moderately Helpful", "Helpful", "Very Helpful"],
+    }
     
-    results_ac1.append({
-        'Metric': metric.replace('_', ' ').title(),
-        'AC1': round(ac1, 5),
-        'SE': round(se, 5),
-        'CI': f"[{ci_low:.5f}, {ci_high:.5f}]",
-        'Interpretation': get_interpretation(ac1)
-    })
-    print(f"{metric}: AC1={ac1:.5f}, SE={se:.5f}, CI=[{ci_low:.5f}, {ci_high:.5f}], {get_interpretation(ac1)}")
+    metrics = [
+        "clarity",
+        "clinical_relevance",
+        "difficulty",
+        "option_accuracy",
+        "assessment_accuracy",
+        "feedback_quality",
+        "cognitive_level",
+    ]
+    
+    print("=" * 105)
+    print("GWET'S AC1 (UNWEIGHTED - NOMINAL AGREEMENT)")
+    print("=" * 105)
+    print(f"{'Metric':<24} | {'AC1':<8} | {'SE':<8} | {'Pa (Obs)':<8} | {'Pe (Chance)':<11} | {'95% CI':<20} | {'Interpretation':<12}")
+    print("-" * 105)
+    
+    results_ac1 = []
+    for m in metrics:
+        piv = df.pivot(index="item_id", columns="rater", values=m).dropna()
+        cats = ordinal_categories.get(m, None)
+        res = calculate_gwet(piv, weights="unweighted", categories=cats)
+        interp = get_altman_interpretation(res["coeff"])
+        ci_str = f"[{res['ci_low']:.5f}, {res['ci_high']:.5f}]"
+        
+        results_ac1.append({
+            "Metric": m.replace("_", " ").title(),
+            "AC1": res["coeff"],
+            "SE": res["se"],
+            "Pa": res["pa"],
+            "Pe": res["pe"],
+            "CI": ci_str,
+            "Interpretation": interp,
+        })
+        print(f"{m.replace('_', ' ').title():<24} | {res['coeff']:.5f}  | {res['se']:.5f}  | {res['pa']:.5f}   | {res['pe']:.5f}       | {ci_str:<20} | {interp:<12}")
+        
+    print("\n" + "=" * 105)
+    print("GWET'S AC2 (QUADRATIC WEIGHTED - ORDINAL AGREEMENT)")
+    print("=" * 105)
+    print(f"{'Metric':<24} | {'AC2':<8} | {'SE':<8} | {'Pa (Obs)':<8} | {'Pe (Chance)':<11} | {'95% CI':<20} | {'Interpretation':<12}")
+    print("-" * 105)
+    
+    results_ac2 = []
+    for m in metrics:
+        piv = df.pivot(index="item_id", columns="rater", values=m).dropna()
+        cats = ordinal_categories.get(m, None)
+        res = calculate_gwet(piv, weights="quadratic", categories=cats)
+        interp = get_altman_interpretation(res["coeff"])
+        ci_str = f"[{res['ci_low']:.5f}, {res['ci_high']:.5f}]"
+        
+        results_ac2.append({
+            "Metric": m.replace("_", " ").title(),
+            "AC2": res["coeff"],
+            "SE": res["se"],
+            "Pa": res["pa"],
+            "Pe": res["pe"],
+            "CI": ci_str,
+            "Interpretation": interp,
+        })
+        print(f"{m.replace('_', ' ').title():<24} | {res['coeff']:.5f}  | {res['se']:.5f}  | {res['pa']:.5f}   | {res['pe']:.5f}       | {ci_str:<20} | {interp:<12}")
 
-print("\n" + "=" * 80)
-print("Gwet's AC2 with quadratic weights (for ordinal data)")
-print("=" * 80)
-results_ac2 = []
-for metric in metrics:
-    df['question_id'] = df['unique_id'].str.rsplit('_', n=1).str[0]
-    pivoted = df.pivot(index='question_id', columns='rater', values=metric)
-    pivoted = pivoted.dropna()
-    
-    ac2, se = calculate_gwet_ac2_quadratic(pivoted, categories)
-    ci_low = ac2 - 1.96 * se
-    ci_high = ac2 + 1.96 * se
-    
-    results_ac2.append({
-        'Metric': metric.replace('_', ' ').title(),
-        'AC2': round(ac2, 5),
-        'SE': round(se, 5),
-        'CI': f"[{ci_low:.5f}, {ci_high:.5f}]",
-        'Interpretation': get_interpretation(ac2)
-    })
-    print(f"{metric}: AC2={ac2:.5f}, SE={se:.5f}, CI=[{ci_low:.5f}, {ci_high:.5f}], {get_interpretation(ac2)}")
 
-print("\n" + "=" * 80)
-print("Debug: Examining Difficulty ratings")
-print("=" * 80)
-df['question_id'] = df['unique_id'].str.rsplit('_', n=1).str[0]
-difficulty_pivot = df.pivot(index='question_id', columns='rater', values='difficulty')
-print(difficulty_pivot)
+if __name__ == "__main__":
+    main()
