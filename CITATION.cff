@@ -1,0 +1,49 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the software and the paper it accompanies."
+title: "BOARDS-AI: Mock Simulator"
+abstract: >-
+  Reference implementation of the BOARDS-AI radiology OSCE simulator: an
+  LLM-driven pipeline that generates OSCE-style multiple-choice questions from
+  radiology case data, evaluates candidate responses with structured feedback,
+  and collects expert ratings through a benchmarking portal.
+type: software
+authors:
+  - family-names: Ankush
+    given-names: Ankush
+    orcid: "https://orcid.org/0000-0001-9879-5240"
+    affiliation: "Department of Radiology, Wake Forest University School of Medicine, Winston-Salem, NC, USA"
+repository-code: "https://github.com/drankush/BOARDS-AI-Code-Sharing"
+license: MIT
+keywords:
+  - radiology education
+  - large language models
+  - OSCE
+  - multiple-choice questions
+  - artificial intelligence
+preferred-citation:
+  type: article
+  title: "Benchmarking large language model performance in generating and assessing radiology objective structured clinical examination"
+  journal: "Radiology Advances"
+  year: 2026
+  doi: "10.1093/radadv/umag039"
+  authors:
+    - family-names: Ankush
+      given-names: Ankush
+      orcid: "https://orcid.org/0000-0001-9879-5240"
+    - family-names: Burman
+      given-names: Samriddhi
+      orcid: "https://orcid.org/0000-0002-2532-4189"
+    - family-names: Smith
+      given-names: Sydney
+      orcid: "https://orcid.org/0000-0002-1904-3647"
+    - family-names: Gupta
+      given-names: Vivek
+      orcid: "https://orcid.org/0009-0004-7158-7723"
+    - family-names: Barath
+      given-names: Sitaram
+      orcid: "https://orcid.org/0000-0002-4972-067X"
+    - family-names: Puranik
+      given-names: Monika
+    - family-names: Ponnatapura
+      given-names: Janardhana
+      orcid: "https://orcid.org/0000-0002-7459-0854"

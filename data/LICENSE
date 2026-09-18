@@ -1,0 +1,46 @@
+LICENCE AND ATTRIBUTION FOR data/
+
+The files in this directory contain material derived from Radiopaedia.org and
+are NOT covered by the MIT licence that applies to the source code in this
+repository.
+
+Licence
+-------
+Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported
+(CC BY-NC-SA 3.0)
+https://creativecommons.org/licenses/by-nc-sa/3.0/
+https://radiopaedia.org/licence
+
+You may copy, redistribute and build upon this material, provided you:
+  * attribute it as set out below,
+  * do not use it commercially, either directly or indirectly, and
+  * license any derivative under these same terms.
+
+Attribution
+-----------
+Case (data/30244.json, and the session records in data/db.osce_qa.json):
+
+  Case courtesy of Garth Kruger, Radiopaedia.org (https://radiopaedia.org/).
+  From the case rID: 18512 — https://radiopaedia.org/cases/18512
+  Licensed under CC BY-NC-SA 3.0 — https://radiopaedia.org/licence
+
+Reference article text:
+
+  Radswiki T, Elfeky M, Weerakkody Y, et al. Mondor disease (breast).
+  Reference article, Radiopaedia.org (accessed 4 June 2024).
+  https://doi.org/10.53347/rID-12346
+  Licensed under CC BY-NC-SA 3.0 — https://radiopaedia.org/licence
+
+Scope
+-----
+This directory contains a SINGLE demonstration case, included so that the
+reference implementation runs out of the box. The 50-case study dataset
+described in the accompanying publication is not redistributed here.
+
+Material was obtained in June 2024 under the licence terms then in force.
+Radiopaedia introduced an application process for non-commercial AI-related
+use on 6 December 2024; users intending new AI-related use of Radiopaedia
+content should consult https://radiopaedia.org/licence directly.
+
+data/case_schema.json is documentation authored for this repository and is
+covered by the MIT licence in the repository root.

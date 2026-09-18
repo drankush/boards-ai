@@ -1,112 +1,227 @@
+<div align="center">
+
+<img src="aiboards_logo.jpeg" alt="BOARDS-AI" width="420">
+
 # BOARDS-AI: Mock Simulator
 
-**Sanitized, local-first mock implementation** of the BOARDS-AI Radiology OSCE Simulator platform.
+**Reference implementation for the LLM-driven radiology OSCE simulator described in _Radiology Advances_.**
 
-**Demo App:** [https://boards-ai.streamlit.app/](https://boards-ai.streamlit.app/)
-*(Click "Yes, get this app back up!" if app has gone to sleep due to inactivity.)*
+[![DOI](https://img.shields.io/badge/DOI-10.1093%2Fradadv%2Fumag039-1a7f37)](https://doi.org/10.1093/radadv/umag039)
+[![Journal](https://img.shields.io/badge/Radiology%20Advances-OUP-002147)](https://academic.oup.com/radadv)
+[![Live demo](https://img.shields.io/badge/demo-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://boards-ai.streamlit.app/)
 
-This repository demonstrates the complete pipeline for LLM-driven radiology board examination simulation as described in:
+[![Code licence: MIT](https://img.shields.io/badge/code%20licence-MIT-yellow)](LICENSE)
+[![Data licence: CC BY-NC-SA 3.0](https://img.shields.io/badge/data%20licence-CC%20BY--NC--SA%203.0-lightgrey)](data/LICENSE)
+[![Python](https://img.shields.io/badge/python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 
-> *[Manuscript title and citation to be added upon publication]*
+</div>
 
-## Overview
+---
 
-BOARDS-AI uses large language models (LLMs) to generate interactive, case-based OSCE (Objective Structured Clinical Examination) sessions for radiology education. The platform:
+## The paper
 
-1. **Ingests** radiology case data (clinical vignettes, imaging findings, reference articles)
-2. **Generates** unique MCQ questions using zero-shot, in-context learning
-3. **Evaluates** candidate responses with structured, educational feedback
-4. **Benchmarks** quality through an expert rater survey portal
+> Ankush A, Burman S, Smith S, Gupta V, Barath S, Puranik M, Ponnatapura J.
+> **Benchmarking large language model performance in generating and assessing radiology objective structured clinical examination.**
+> *Radiology Advances.* 2026:umag039. doi:[10.1093/radadv/umag039](https://doi.org/10.1093/radadv/umag039)
 
-This mock implementation replaces production cloud dependencies (Cloudinary CDN, MongoDB, multi-provider LLM pool) with local alternatives suitable for reproduction and extension.
+<details>
+<summary>BibTeX</summary>
 
-## Quick Start
+```bibtex
+@article{ankush2026benchmarking,
+  author  = {Ankush, Ankush and Burman, Samriddhi and Smith, Sydney and
+             Gupta, Vivek and Barath, Sitaram and Puranik, Monika and
+             Ponnatapura, Janardhana},
+  title   = {Benchmarking large language model performance in generating and
+             assessing radiology objective structured clinical examination},
+  journal = {Radiology Advances},
+  year    = {2026},
+  pages   = {umag039},
+  doi     = {10.1093/radadv/umag039}
+}
+```
+
+</details>
+
+GitHub's **Cite this repository** button reads [`CITATION.cff`](CITATION.cff) and will produce this citation for you.
+
+---
+
+## What this is
+
+BOARDS-AI uses large language models to generate interactive, case-based OSCE
+(Objective Structured Clinical Examination) sessions for radiology education. The pipeline:
+
+1. **Ingests** radiology case data — clinical vignette, imaging findings, reference article
+2. **Generates** an OSCE-style MCQ with four options by zero-shot, in-context learning
+3. **Evaluates** a candidate response and returns structured, educational feedback
+4. **Benchmarks** output quality through a blinded expert-rater portal
+
+### Relationship to the published study
+
+This repository is a **local-first reference implementation**, not the production deployment.
+The parts that matter scientifically are identical to those used in the study — the prompt
+templates in [`prompts.py`](prompts.py), the session logic, the rating instrument, and the
+statistical code. Production cloud dependencies have been substituted so the project runs on
+a laptop:
+
+| Study deployment | This repository |
+|---|---|
+| Four provider SDKs (OpenAI, Anthropic, Google, Meta) | Single OpenRouter endpoint, any model |
+| MongoDB session store | Local JSON files |
+| Cloudinary CDN for case images | Base64 images embedded in the case JSON |
+| 50-case Radiopaedia dataset | One attributed demonstration case |
+
+**Reproducibility note.** The study queried GPT-4o, Llama 3-70b, Claude 3.5 Sonnet and
+Gemini 1.5 Flash in **August 2024**. Those model versions are retired or altered, so running
+this code today will not reproduce the paper's generations verbatim. It reproduces the
+*method*, not the outputs.
+
+---
+
+## Live demo
+
+**https://boards-ai.streamlit.app/** — if the app has gone to sleep, click *"Yes, get this app back up!"*.
+
+## Quick start
 
 ```bash
-# 1. Clone and install dependencies
+# 1. Clone and install
 git clone https://github.com/drankush/BOARDS-AI-Code-Sharing
-cd boards-ai-simulator
+cd BOARDS-AI-Code-Sharing
 pip install -r requirements.txt
 
 # 2. Configure your API key
 cp .env.example .env
-# Edit .env and add your OpenRouter API key
+#    Edit .env and add your OpenRouter key, or paste it into the app sidebar at runtime
 
-# 3. Run the simulator
+# 3. Run
 streamlit run Welcome.py
 ```
 
-## Repository Structure
+Developed and reported on **Python 3.11.12** with **Streamlit 1.32.0**.
+[`requirements.txt`](requirements.txt) specifies compatible ranges; pin to those two versions
+to match the study environment exactly.
+
+---
+
+## Repository structure
 
 ```
-boards-ai-simulator/
-├── Welcome.py                    # Landing page with project overview
+.
+├── Welcome.py                       # Landing page
 ├── pages/
-│   ├── 1_Admin_Portal.py         # Interactive OSCE session engine
-│   └── 2_Rater_Portal.py         # Expert benchmarking survey form
-├── prompts.py                    # LLM prompt templates (generation + evaluation)
-├── case_loader.py                # Local JSON case loader
-├── image_utils.py                # Image collage builder
+│   ├── 1_Admin_Portal.py            # Interactive OSCE session engine
+│   └── 2_Rater_Portal.py            # Blinded expert benchmarking form
+├── prompts.py                       # LLM prompt templates (generation + evaluation)
+├── case_loader.py                   # Local JSON case loader
+├── image_utils.py                   # Image collage builder
 ├── data/
-│   ├── case_schema.json          # Case data schema documentation
-│   ├── 30244.json                # Synthetic demo case for testing
-│   └── db.osce_qa.json           # Pre-recorded database of rated sessions
-├── requirements.txt              # Python dependencies
-├── .env.example                  # API key template
-└── .streamlit/
-    └── config.toml               # Streamlit theme configuration
+│   ├── case_schema.json             # Case data schema documentation
+│   ├── 30244.json                   # Demonstration case (Radiopaedia, attributed)
+│   ├── db.osce_qa.json              # Pre-recorded rated sessions for the Rater Portal
+│   └── LICENSE                      # CC BY-NC-SA 3.0 — applies to this directory
+├── Statistical-Analysis/
+│   ├── Calculate_GwetAC2.py         # Gwet's AC1/AC2 inter-rater reliability
+│   ├── Accuracy_Metrics_Calculation.py  # TBA / 2TBA / AS4A / P5A thresholds
+│   └── BOARDS AI sas.sas            # GEE models and Borda ranking (SAS 9.4)
+├── .devcontainer/devcontainer.json  # Reproducible dev container
+├── .streamlit/config.toml           # Theme
+├── requirements.txt
+├── .env.example
+├── CITATION.cff
+└── LICENSE                          # MIT — applies to code
 ```
 
-## Adding Your Own Cases
+---
 
-1. Create a JSON file in the `data/` directory
-2. Follow the schema documented in `data/case_schema.json`
-3. Required fields: `Heading`, `Presentation`, `Patient Data`, `Study Findings`, `Case Related Articles`, `Citation`, `Case Images`, `uid`
-4. Images must be base64-encoded with a data-URI prefix (e.g., `data:image/jpg;base64,...`)
+## Key components
 
-## Key Components
+### Prompt templates — [`prompts.py`](prompts.py)
 
-### Prompt Templates (`prompts.py`)
+The verbatim prompts used in the study.
 
-Contains the **exact LLM prompts** used in the study:
+- **Question generation** — instructs the model to produce an OSCE-style MCQ with four
+  options from the case data. Within a session, previously generated questions are supplied
+  to the prompt *solely* to enforce concept non-repetition; questions are not chained, and no
+  anchor stem is shared.
+- **Evaluation** — produces structured feedback covering correct and incorrect option
+  analysis plus an overall performance score.
 
-- **Question Generation**: System prompt instructing the LLM to create OSCE-style MCQs with progressive difficulty, using case data for zero-shot in-context learning
-- **Evaluation**: System prompt for structured feedback generation covering correct/incorrect option analysis and an overall performance score
+### Admin Portal — [`pages/1_Admin_Portal.py`](pages/1_Admin_Portal.py)
 
-### Admin Portal (`pages/1_Admin_Portal.py`)
+Loads a random case, renders its images as a tiled collage, then runs the three-question
+session: generate MCQ → assign a random option as the candidate response → repeat ×3 →
+evaluate all responses with structured feedback.
 
-Interactive 3-question session:
-1. Load a random case from `data/`
-2. Display case images as a tiled collage
-3. LLM generates MCQ → random option selection → repeat 3×
-4. LLM evaluates all responses with structured feedback
+### Rater Portal — [`pages/2_Rater_Portal.py`](pages/2_Rater_Portal.py)
 
-### Rater Portal (`pages/2_Rater_Portal.py`)
+The blinded benchmarking instrument, scoring each question on:
 
-Expert benchmarking form with 7 metrics per question:
-- **Clarity** (5-point scale)
-- **Clinical Relevance** (5-point scale)
-- **Difficulty Level** (3-point scale)
-- **Option Accuracy** (5-point scale)
-- **Assessment Accuracy** (5-point scale)
-- **Feedback Quality** (5-point scale)
-- **Cognitive Level** (2-category)*
+| Metric | Scale |
+|---|---|
+| Clarity | 5-point |
+| Clinical relevance | 5-point |
+| Difficulty | 3-point (Easy / Moderate / Difficult) |
+| Option accuracy | 5-point |
+| Assessment accuracy | 5-point |
+| Feedback quality | 5-point |
+| Cognitive level\* | 2-category |
 
-*Not part of the current study.
+\* Collected in the platform but not analysed in the present study. Difficulty was collected
+but excluded from comparative analysis because of poor inter-rater agreement — see the paper.
 
-Ratings are saved as JSON files in the `ratings/` directory.
+Ratings are written as JSON to `ratings/` (git-ignored).
 
+### Statistical analysis — [`Statistical-Analysis/`](Statistical-Analysis)
 
-## Dependencies
+Inter-rater reliability (Gwet's AC1/AC2 with quadratic weights), the threshold accuracy
+metrics, and the SAS code for the generalized estimating equation models and Borda count
+ranking reported in the paper.
 
-- Python 3.10+
-- [Streamlit](https://streamlit.io/) ≥1.30
-- [OpenRouter Python SDK](https://github.com/OpenRouterTeam/python-sdk) ≥0.9.0
-- [streamlit-survey](https://github.com/okld/streamlit-survey) 0.1.0
-- [streamlit-feedback](https://github.com/trubrics/streamlit-feedback) ≥0.1.3
-- [streamlit-option-menu](https://github.com/victoryhb/streamlit-option-menu) ≥0.3.13
-- [Pillow](https://python-pillow.org/) ≥10.0
+---
 
-## License
+## Adding your own cases
 
-MIT License
+1. Create a `.json` file in `data/`
+2. Follow the structure in [`data/case_schema.json`](data/case_schema.json)
+3. Required fields: `Heading`, `Presentation`, `Patient Data`, `Study Findings`,
+   `Case Related Articles`, `Citation`, `Case Images`, `uid`
+4. Images must be base64-encoded with a data-URI prefix, e.g. `data:image/png;base64,...`
+
+---
+
+## Data provenance and licensing
+
+This repository is **dual-licensed**.
+
+| Scope | Licence |
+|---|---|
+| Source code (everything outside `data/`, plus `data/case_schema.json`) | [MIT](LICENSE) |
+| Case content in `data/` | [CC BY-NC-SA 3.0](data/LICENSE) |
+
+`data/30244.json` and the session records in `data/db.osce_qa.json` contain material from
+Radiopaedia.org, redistributed here under CC BY-NC-SA 3.0 with attribution:
+
+> Case courtesy of Garth Kruger, [Radiopaedia.org](https://radiopaedia.org/) — from the case
+> [rID: 18512](https://radiopaedia.org/cases/18512). Reference article: Radswiki T, Elfeky M,
+> Weerakkody Y, et al. *Mondor disease (breast)*, Radiopaedia.org (accessed 4 June 2024),
+> [doi:10.53347/rID-12346](https://doi.org/10.53347/rID-12346). Licensed under
+> [CC BY-NC-SA 3.0](https://radiopaedia.org/licence).
+
+**A single demonstration case is included** so the simulator runs out of the box. The 50-case
+study dataset is not redistributed. If you build on the `data/` contents you must attribute
+Radiopaedia, keep the use non-commercial, and license your derivative under the same terms.
+
+Material was obtained in June 2024 under the licence terms then in force. Radiopaedia
+introduced an application process for non-commercial AI-related use on 6 December 2024;
+consult [radiopaedia.org/licence](https://radiopaedia.org/licence) before any new AI-related
+use of their content.
+
+---
+
+## Acknowledgements
+
+Case material from [Radiopaedia.org](https://radiopaedia.org/), used under CC BY-NC-SA 3.0.
+Model access for the reference implementation is routed through
+[OpenRouter](https://openrouter.ai/models).
