@@ -43,7 +43,6 @@
 
 </details>
 
-GitHub's **Cite this repository** button reads [`CITATION.cff`](CITATION.cff) and will produce this citation for you.
 
 ---
 
