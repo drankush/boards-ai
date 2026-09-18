@@ -8,11 +8,11 @@
 
 [![DOI](https://img.shields.io/badge/DOI-10.1093%2Fradadv%2Fumag039-1a7f37)](https://doi.org/10.1093/radadv/umag039)
 [![Journal](https://img.shields.io/badge/Radiology%20Advances-RSNA-002147)](https://academic.oup.com/radadv)
-
+[![Simulator Demo](https://img.shields.io/badge/demo-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://boards-ai.streamlit.app/)
+[![Data Explorer](https://img.shields.io/badge/Data%20Explorer-GitHub%20Pages-24292e?logo=github&logoColor=white)](https://drankush.github.io/boards-ai/)
 
 [![Code licence: MIT](https://img.shields.io/badge/code%20licence-MIT-yellow)](LICENSE)
-[![Data licence: CC BY-NC-SA 3.0](https://img.shields.io/badge/data%20licence-CC%20BY--NC--SA%203.0-lightgrey)](data/LICENSE)
-
+[![Dataset licence: CC BY-NC-SA 3.0](https://img.shields.io/badge/dataset%20licence-CC%20BY--NC--SA%203.0-lightgrey)](data/LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![OpenRouter](https://img.shields.io/badge/OpenRouter-141210?style=flat-square&logo=openrouter&logoColor=white)](https://openrouter.ai/)
 </div>
@@ -78,11 +78,18 @@ this code today will not reproduce the paper's generations verbatim. It reproduc
 
 ---
 
-## Live demo
+## Interactive Demos & Tools
 
-[![Live demo](https://img.shields.io/badge/demo-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://boards-ai.streamlit.app/)
+| Tool | Access | Description |
+|---|---|---|
+| **OSCE Simulator** | [![Simulator Demo](https://img.shields.io/badge/demo-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://boards-ai.streamlit.app/) [`boards-ai.streamlit.app`](https://boards-ai.streamlit.app/) | Interactive 3-question mock OSCE simulator & blinded rater portal |
+| **Data Explorer** | [![Data Explorer](https://img.shields.io/badge/Data%20Explorer-GitHub%20Pages-24292e?logo=github&logoColor=white)](https://drankush.github.io/boards-ai/) [`drankush.github.io/boards-ai`](https://drankush.github.io/boards-ai/) | Web-based side-by-side viewer for LLM questions & evaluations |
 
-**https://boards-ai.streamlit.app/** — if the app has gone to sleep, click *"Yes, get this app back up!"*.
+### Interactive Data Explorer
+The [**BOARDS-AI Data Explorer**](https://drankush.github.io/boards-ai/) provides a browser-based interface to inspect the study dataset:
+- **Filter & Search**: Browse radiology cases across 10 subspecialties.
+- **Model Comparison**: View and compare model-generated OSCE questions and evaluations side-by-side across all four evaluated LLMs (GPT-4o, Llama 3-70b, Claude 3.5 Sonnet, Gemini 1.5 Flash).
+- **Dataset Access**: The generated dataset is distributed under [CC BY-NC-SA 3.0](data/LICENSE). Full dataset access is available for non-commercial academic research upon request.
 
 ## Quick start
 
@@ -110,7 +117,10 @@ to match the study environment exactly.
 
 ```
 .
-├── Welcome.py                       # Landing page
+├── index.html                       # Data Explorer web app (GitHub Pages)
+├── app.js                           # Explorer client & API integration
+├── styles.css                       # Explorer styles (light & dark mode)
+├── Welcome.py                       # Streamlit simulator landing page
 ├── pages/
 │   ├── 1_Admin_Portal.py            # Interactive OSCE session engine
 │   └── 2_Rater_Portal.py            # Blinded expert benchmarking form
@@ -197,8 +207,8 @@ This repository is **dual-licensed**.
 
 | Scope | Licence |
 |---|---|
-| Source code (everything outside `data/`, plus `data/case_schema.json`) | [MIT](LICENSE) |
-| Case content in `data/` | [CC BY-NC-SA 3.0](data/LICENSE) |
+| Source code (`*.py`, `index.html`, `app.js`, `styles.css`, `case_schema.json`) | [MIT](LICENSE) |
+| Generated Dataset & Case content (`data/`, Explorer dataset) | [CC BY-NC-SA 3.0](data/LICENSE) |
 
 `data/30244.json` and the session records in `data/db.osce_qa.json` contain material from
 Radiopaedia.org, redistributed here under CC BY-NC-SA 3.0 with attribution:
