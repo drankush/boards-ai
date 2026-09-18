@@ -6,15 +6,13 @@
 
 **Reference implementation for the LLM-driven radiology OSCE simulator described in _Radiology Advances_.**
 
+
 [![DOI](https://img.shields.io/badge/DOI-10.1093%2Fradadv%2Fumag039-1a7f37)](https://doi.org/10.1093/radadv/umag039)
 [![Journal](https://img.shields.io/badge/Radiology%20Advances-RSNA-002147)](https://academic.oup.com/radadv)
-[![Simulator Demo](https://img.shields.io/badge/demo-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://boards-ai.streamlit.app/)
-[![Data Explorer](https://img.shields.io/badge/Data%20Explorer-GitHub%20Pages-24292e?logo=github&logoColor=white)](https://drankush.github.io/boards-ai/)
 
 [![Code licence: MIT](https://img.shields.io/badge/code%20licence-MIT-yellow)](LICENSE)
 [![Dataset licence: CC BY-NC-SA 3.0](https://img.shields.io/badge/dataset%20licence-CC%20BY--NC--SA%203.0-lightgrey)](data/LICENSE)
-[![Python](https://img.shields.io/badge/python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![OpenRouter](https://img.shields.io/badge/OpenRouter-141210?style=flat-square&logo=openrouter&logoColor=white)](https://openrouter.ai/)
+
 </div>
 
 ---
