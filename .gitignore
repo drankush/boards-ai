@@ -16,6 +16,13 @@ build/
 
 # Local data (keep schema, exclude real cases and ratings)
 ratings/
+data.js
+
+# Web / Cloudflare / Node
+.wrangler/
+node_modules/
+logs/
+*.log
 
 # OS
 .DS_Store
