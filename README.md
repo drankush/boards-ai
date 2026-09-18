@@ -12,6 +12,7 @@
 
 [![Code licence: MIT](https://img.shields.io/badge/code%20licence-MIT-yellow)](LICENSE)
 [![Data licence: CC BY-NC-SA 3.0](https://img.shields.io/badge/data%20licence-CC%20BY--NC--SA%203.0-lightgrey)](data/LICENSE)
+
 [![Python](https://img.shields.io/badge/python-3.11-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![OpenRouter](https://img.shields.io/badge/OpenRouter-141210?style=flat-square&logo=openrouter&logoColor=white)](https://openrouter.ai/)
 </div>
