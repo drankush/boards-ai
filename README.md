@@ -74,6 +74,8 @@ Gemini 1.5 Flash in **August 2024**. Those model versions are retired or altered
 this code today will not reproduce the paper's generations verbatim. It reproduces the
 *method*, not the outputs.
 
+**Statistical analysis note.** Pairwise model comparisons used GEE (SAS 9.4, `PROC GENMOD`) with the repeated-measures subject defined at the item level (`repeated subject=id_ques_model`), i.e. accounting for the three raters' repeated ratings of each generated question. Additional clustering of the three questions within a session, or of the same case across models, was not modelled. Accuracy percentages (TBA, AS4A, 2TBA, P5A) are computed per question (150 per model). Borda points were assigned manually from the Tukey-adjusted pairwise results (Net Win Score per metric, tied ranks averaged).
+
 ---
 
 ## Interactive Demos & Tools
@@ -87,14 +89,14 @@ this code today will not reproduce the paper's generations verbatim. It reproduc
 The [**BOARDS-AI Data Explorer**](https://drankush.github.io/boards-ai/) provides a browser-based interface to inspect the study dataset:
 - **Filter & Search**: Browse radiology cases across 10 subspecialties.
 - **Model Comparison**: View and compare model-generated OSCE questions and evaluations side-by-side across all four evaluated LLMs (GPT-4o, Llama 3-70b, Claude 3.5 Sonnet, Gemini 1.5 Flash).
-- **Dataset Access**: The generated dataset is distributed under [CC BY-NC-SA 3.0](data/LICENSE). Full dataset access is available for non-commercial academic research upon request.
+- **Dataset Access**: The Explorer contains all LLM-generated questions, randomly assigned responses and model evaluations from the study (distributed under [CC BY-NC-SA 3.0](data/LICENSE)). The Radiopaedia source cases themselves are not redistributed, apart from the single attributed demonstration case in `data/`.
 
 ## Quick start
 
 ```bash
 # 1. Clone and install
-git clone https://github.com/drankush/BOARDS-AI-Code-Sharing
-cd BOARDS-AI-Code-Sharing
+git clone https://github.com/drankush/BOARDS-AI
+cd BOARDS-AI
 pip install -r requirements.txt
 
 # 2. Configure your API key
